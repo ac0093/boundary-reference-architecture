@@ -1,0 +1,23 @@
+version: "3.8"
+   
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=boundary
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  boundary:
+    image: boundary
+    command: server -config /boundary.hcl 
+    volumes:
+      - .:/boundary.hcl
+    ports:
+      - "9200:9200"
+      - "9201:9201"
+      - "9202:9202"
+    environment:
+      - BOUNDARY_PG_URL=postgresql://postgres:postgres@db/boundary
+    depends_on:
+      - db
+
